@@ -20,14 +20,12 @@ def write_nouns(found_nouns, file_name='data/found_nouns.csv'):
         writer.writerow(['row_id', 'noun'])
         writer.writerows(found_nouns)
 
-    
-
 if __name__ == "__main__":
     spacy.prefer_gpu()
     # Don't need NER pipeline
     nlp = spacy.load("en_core_web_sm", disable=['ner'])
 
-    titles = read_titles(n=10) 
+    titles = read_titles() 
 
     # Consist of tuples of (row_id, noun lemma) so it's possible to find sentence the noun is from
     found_nouns = []
