@@ -12,7 +12,7 @@ def read_titles(file_name='data/askreddit_titles_entire_month.csv', n=100000):
                 break
             titles.append((i, title, created_utc))
             i += 1
-    return titles
+    return titles[1:]
 
 def read_nouns(file_name='data/found_nouns.csv'):
     nouns = []
