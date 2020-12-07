@@ -26,7 +26,7 @@ def counter_bin(titles_bin, nouns):
     bin_count = collections.defaultdict(collections.Counter)
     for bin, titles in titles_bin.items():
         for title in titles:
-            bin_count[bin].update(noun_lookup[str(title)])
+            bin_count[bin].update(noun_lookup[title])
     return bin_count
     
 def print_day_common_nouns(counter_bin, start_time, n=5):
@@ -37,7 +37,7 @@ def print_day_common_nouns(counter_bin, start_time, n=5):
             print('\t', noun, ":", count)
 
 if __name__ == "__main__":
-    titles = find_nouns.read_titles(n=None)
+    titles = find_nouns.read_titles("data/askreddit_titles_entire_month.csv", n=10)
     nouns = find_nouns.read_nouns("data/found_nouns_all.csv")
 
     start_time = min(int(title[2]) for title in titles)
