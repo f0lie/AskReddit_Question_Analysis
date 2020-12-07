@@ -1,0 +1,4 @@
+SELECT title, created_on
+FROM `fh-bigquery.reddit_posts.2019_08` 
+WHERE subreddit  = 'AskReddit'
+LIMIT 100000
