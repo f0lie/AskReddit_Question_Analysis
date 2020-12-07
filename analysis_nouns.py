@@ -37,8 +37,8 @@ def print_day_common_nouns(counter_bin, start_time, n=5):
             print('\t', noun, ":", count)
 
 if __name__ == "__main__":
-    titles = find_nouns.read_titles()
-    nouns = find_nouns.read_nouns()
+    titles = find_nouns.read_titles(n=None)
+    nouns = find_nouns.read_nouns("data/found_nouns_all.csv")
 
     start_time = min(int(title[2]) for title in titles)
     titles_bin = time_bin(titles, start_time)
