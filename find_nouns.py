@@ -14,6 +14,15 @@ def read_titles(file_name='data/askreddit_titles_entire_month.csv', n=100000):
             i += 1
     return titles
 
+def read_nouns(file_name='data/found_nouns.csv'):
+    nouns = []
+    with open(file_name, newline='', encoding='utf-8') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        for row_id, noun in csv_reader:
+            nouns.append((row_id, noun))
+    return nouns
+
+
 def write_nouns(found_nouns, file_name='data/found_nouns.csv'):
     with open(file_name, 'w', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file)

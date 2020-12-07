@@ -1,12 +1,18 @@
 import pandas
 import collections
+import find_nouns
 
-if __name__ == "__main__":
-    nouns_df = pandas.read_csv("data/found_nouns.csv")
+def most_common_nouns(nouns, n=100):
     counter = collections.Counter()
 
-    for noun in nouns_df['noun']:
+    for _, noun in nouns:
         counter[str(noun).lower()] += 1
     
-    print(counter.most_common(100))
+    for noun, count in counter.most_common(n):
+        print(noun, '\t', count)
+
+if __name__ == "__main__":
+    nouns = find_nouns.read_nouns()
+
+    most_common_nouns(nouns)
     
