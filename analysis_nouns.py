@@ -4,7 +4,6 @@ import datetime
 
 #peusdo_stem_words = set(["reddit", "redditor", "people", "life", "story", "time", "person", "thing", "way"])
 
-
 def time_bin(titles, start_time, bin_length=86400):
     # Bins titles by created_utc. Does this in chunks of bin_length which is utc in day_length by default
     # Returns a dict with a list of row_id in that bin_length
@@ -40,7 +39,6 @@ def print_day_common_nouns(counter_bin, start_time, n=5):
 if __name__ == "__main__":
     titles = find_nouns.read_titles()
     nouns = find_nouns.read_nouns()
-
 
     start_time = min(int(title[2]) for title in titles)
     titles_bin = time_bin(titles, start_time)
