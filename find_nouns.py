@@ -39,21 +39,19 @@ if __name__ == "__main__":
     nlp = spacy.load("en_core_web_md", disable=['ner'])
 
     print('Reading titles')
-    titles = read_titles() 
+    titles = read_titles(n=None) 
     print("Titles loaded")
 
     # Consist of tuples of (row_id, noun lemma) so it's possible to find sentence the noun is from
     found_nouns = []
 
     print("Finding nouns")
-    for row_id, title, _ in titles:
-        doc = nlp(title)
-        for token in doc:
-            if token.pos_ == 'PROPN' or token.pos_ == 'NOUN':
-                found_nouns.append((row_id, token.lemma_))
+    with open("data/found_nouns_all.csv", 'w', newline='', encoding='utf-8') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['row_id', 'noun'])
+        for row_id, title, _ in titles:
+            doc = nlp(title)
+            for token in doc:
+                if token.pos_ == 'PROPN' or token.pos_ == 'NOUN':
+                    writer.writerow((row_id, token.lemma_))
     print("Nouns found")
-
-    print("Writing nouns")
-    write_nouns(found_nouns)
-    print("Nouns writen")
-        
