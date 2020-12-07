@@ -3,6 +3,8 @@ import pandas
 import csv
 
 def read_titles(file_name='data/askreddit_titles_entire_month.csv', n=100000):
+    # Read titles from CSV file
+    # n is the number of rows
     titles = []
     i = 0
     with open(file_name, newline='', encoding='utf-8') as csvfile:
@@ -15,6 +17,7 @@ def read_titles(file_name='data/askreddit_titles_entire_month.csv', n=100000):
     return titles[1:]
 
 def read_nouns(file_name='data/found_nouns.csv'):
+    # Read nouns from noun file
     nouns = []
     with open(file_name, newline='', encoding='utf-8') as csv_file:
         csv_reader = csv.reader(csv_file)
@@ -24,6 +27,7 @@ def read_nouns(file_name='data/found_nouns.csv'):
 
 
 def write_nouns(found_nouns, file_name='data/found_nouns.csv'):
+    # Write found nouns into a file
     with open(file_name, 'w', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['row_id', 'noun'])
