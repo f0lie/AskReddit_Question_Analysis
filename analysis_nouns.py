@@ -1,25 +1,38 @@
 import collections
 import find_nouns
 
-def most_common_nouns(nouns, n=100):
-    counter = collections.Counter()
+peusdo_stem_words = set(["reddit", "redditor", "people", "life", "story", "time", "person", "thing", "way"])
 
-    for _, noun in nouns:
-        counter[str(noun).lower()] += 1
-    
-    for noun, count in counter.most_common(n):
-        print(noun, '\t', count)
-
-def time_bin(titles, bin_length=86400):
+def time_bin(titles, start_time, bin_length=86400):
     # Bins titles by created_utc. Does this in chunks of bin_length which is utc in day_length by default
-    start_time = min(int(title[2]) for title in titles)
     bin = collections.defaultdict(list)
     for row_id, _, created_utc in titles:
         day = (int(created_utc)-start_time)//bin_length
         bin[day].append(row_id)
     return bin
 
+def counter_bin(titles_bin, nouns):
+    noun_lookup = collections.defaultdict(list)
+    for row_id, noun in nouns:
+        if noun.lower() not in peusdo_stem_words:
+            noun_lookup[row_id].append(noun.lower())
+
+    bin_count = collections.defaultdict(collections.Counter)
+    for bin, titles in titles_bin.items():
+        for title in titles:
+            bin_count[bin].update(noun_lookup[str(title)])
+    return bin_count
+    
+
 if __name__ == "__main__":
     titles = find_nouns.read_titles()
+    nouns = find_nouns.read_nouns()
 
-    print(time_bin(titles))
+
+    start_time = min(int(title[2]) for title in titles)
+    titles_bin = time_bin(titles, start_time)
+
+    counter_bin = counter_bin(titles_bin, nouns)
+
+    for day, counter in counter_bin.items():
+        print(day, counter.most_common(10))
