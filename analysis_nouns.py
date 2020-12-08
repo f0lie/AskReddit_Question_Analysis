@@ -9,13 +9,14 @@ CountNouns = Counter[str]
 DAY_LENGTH = 86400
 WEEK_LENGTH = 604800
 
-class TitleGroups:
-    def __init__(self, titles, nouns, length):
+class TitleCount:
+    def __init__(self, titles, nouns, length, remove_words=None):
         self.start_time = min(int(title[2]) for title in titles)
         self.titles = titles
         self.nouns = nouns
 
         self.update_titles(length)
+        self.count_nouns(remove_words)
     
     def update_titles(self, length):
         self.group_titles = collections.defaultdict(list)
@@ -23,6 +24,23 @@ class TitleGroups:
         for row_id, _, created_utc in self.titles:
             offset = (int(created_utc)-self.start_time)//self.length
             self.group_titles[offset].append(row_id)
+    
+    def count_nouns(self, remove_words=None):
+        if not remove_words:
+            remove_words = set()
+        
+        # Create noun lookup
+        noun_lookup = collections.defaultdict(list)
+        for row_id, noun in self.nouns:
+            if noun.lower() not in remove_words:
+                noun_lookup[row_id].append(noun.lower())
+
+        # Create a dict to quickly add counts to a grouping
+        self.group_count_nouns = collections.defaultdict(collections.Counter)
+        for group, titles in self.group_titles.items():
+            for title in titles:
+                self.group_count_nouns[group].update(noun_lookup[title])
+ 
 
 def group_titles(titles: List[Title], start_time: int, length: int=WEEK_LENGTH) -> Dict[int, List[str]]:
     # Group titles by created_utc. Does this in chunks of length, defaults to week length. start_time should be the smallest timestamp
@@ -87,5 +105,6 @@ if __name__ == "__main__":
 
     print_count_nouns(daily_count, start_time, length=DAY_LENGTH)
     """
-    group_titles = TitleGroups(titles, nouns, DAY_LENGTH)
-    print(group_titles.group_titles)
+    title_count = TitleCount(titles, nouns, DAY_LENGTH)
+    print(title_count.group_titles)
+    print(title_count.group_count_nouns)
