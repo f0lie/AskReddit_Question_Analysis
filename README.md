@@ -14,7 +14,7 @@ pip install -U spacy
 pip uninstall numpy
 pip install numpy==1.19.3
 
-python -m spacy download en_core_web_sm
+python -m spacy download en_core_web_md
 ```
 
 ## Running the project
