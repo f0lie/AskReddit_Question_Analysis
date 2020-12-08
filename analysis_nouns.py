@@ -5,7 +5,6 @@ import datetime
 from find_nouns import Sentence, Noun
 from typing import List, Dict, Set, Counter
 
-CountNouns = Counter[str]
 DAY_LENGTH = 86400
 WEEK_LENGTH = 604800
 
@@ -24,7 +23,7 @@ class NounCount:
         self.update_sentences(length) # Creates self.group_sentences and self.length
         self.count_nouns(remove_words) # Creates self.group_count_nouns
     
-    def update_sentences(self, length: int):
+    def update_sentences(self, length: int) -> None:
         # Updates groups_sentences with new groups of sentences seperated by a timespan of length
         # Length should a timeperiod in seconds such as the length of a day in seconds, 86400
         self.group_sentences: Dict[int, List[str]] = collections.defaultdict(list)
@@ -33,7 +32,7 @@ class NounCount:
             offset = (int(created_utc)-self.start_time)//self.length
             self.group_sentences[offset].append(row_id)
     
-    def count_nouns(self, remove_words: Set[str]=None):
+    def count_nouns(self, remove_words: Set[str]=None) -> None:
         # Updates group_count_nouns with new counts of nouns within that group
         # Remove_words is a set of words to remove from the count. Meant for very common words
         if not remove_words:
@@ -51,7 +50,7 @@ class NounCount:
             for sentence in sentences:
                 self.group_count_nouns[group].update(noun_lookup[sentence])
  
-    def print_count(self, n=10):
+    def print_count(self, n=10) -> None:
         # Prints out the top N most common words in a group
         for group in sorted(self.group_count_nouns):
             # Convert the groups into readable timestamps
