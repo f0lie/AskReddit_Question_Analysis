@@ -64,15 +64,15 @@ if __name__ == "__main__":
     nouns = find_nouns.read_nouns("data/found_nouns_all.csv")
     print("found sentences:", len(sentences), ", found nouns:", len(nouns))
 
-    sentence_count = NounCount(sentences, nouns, WEEK_LENGTH)
+    noun_count = NounCount(sentences, nouns, WEEK_LENGTH)
     common_words = set(["reddit", "redditor", "people", "life", "story", "time", "person", "thing", "way"])
 
     print("Results with common words")
-    sentence_count.print_count()
+    noun_count.print_count()
     print("Results without common words")
-    sentence_count.count_nouns(common_words)
-    sentence_count.print_count()
+    noun_count.count_nouns(common_words)
+    noun_count.print_count()
     print("Daily results")
-    sentence_count.update_sentences(DAY_LENGTH)
-    sentence_count.print_count()
+    noun_count.update_sentences(DAY_LENGTH)
+    noun_count.print_count()
  
