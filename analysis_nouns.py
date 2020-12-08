@@ -9,6 +9,21 @@ CountNouns = Counter[str]
 DAY_LENGTH = 86400
 WEEK_LENGTH = 604800
 
+class TitleGroups:
+    def __init__(self, titles, nouns, length):
+        self.start_time = min(int(title[2]) for title in titles)
+        self.titles = titles
+        self.nouns = nouns
+
+        self.update_titles(length)
+    
+    def update_titles(self, length):
+        self.group_titles = collections.defaultdict(list)
+        self.length = length
+        for row_id, _, created_utc in self.titles:
+            offset = (int(created_utc)-self.start_time)//self.length
+            self.group_titles[offset].append(row_id)
+
 def group_titles(titles: List[Title], start_time: int, length: int=WEEK_LENGTH) -> Dict[int, List[str]]:
     # Group titles by created_utc. Does this in chunks of length, defaults to week length. start_time should be the smallest timestamp
     # Returns a dict with keys as the group and the value as a list of row_ids in that group
@@ -47,10 +62,11 @@ def print_count_nouns(group_counter: Dict[int, CountNouns], start_time: int, len
             print('\t', noun, ":", count)
 
 if __name__ == "__main__":
-    titles = find_nouns.read_titles("data/askreddit_titles_entire_month.csv", n=None)
+    titles = find_nouns.read_titles("data/askreddit_titles_entire_month.csv", n=10)
     nouns = find_nouns.read_nouns("data/found_nouns_all.csv")
     print("found titles:", len(titles), ", found nouns:", len(nouns))
 
+    """
     # This is used to create offsets for the groupings. Allows for very fast grouping.
     start_time = min(int(title[2]) for title in titles)
     weekly_titles = group_titles(titles, start_time)
@@ -70,3 +86,6 @@ if __name__ == "__main__":
     daily_count = group_count_nouns(daily_titles, nouns)
 
     print_count_nouns(daily_count, start_time, length=DAY_LENGTH)
+    """
+    group_titles = TitleGroups(titles, nouns, DAY_LENGTH)
+    print(group_titles.group_titles)
