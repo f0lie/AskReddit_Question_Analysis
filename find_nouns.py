@@ -47,9 +47,9 @@ if __name__ == "__main__":
     nlp = spacy.load("en_core_web_md", disable=['ner'])
 
     print('Reading titles')
-    #titles = read_titles("data/askreddit_titles_entire_month.csv", n=None) 
+    titles = read_titles("data/askreddit_titles_entire_month.csv", n=None) 
     print("Titles loaded")
 
     print("Finding nouns")
-    #find_nouns(nlp, titles, "data/found_nouns_all.csv")
+    find_nouns(nlp, titles, "data/found_nouns_all.csv")
     print("Nouns found")
