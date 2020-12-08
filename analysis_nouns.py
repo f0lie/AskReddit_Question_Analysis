@@ -11,15 +11,17 @@ WEEK_LENGTH = 604800
 
 class NounCount:
     def __init__(self, sentences: List[Sentence], nouns: List[Noun], length: int, remove_words=None):
-        self.start_time = min(int(sentence[2]) for sentence in sentences)
-        self.sentences = sentences
-        self.nouns = nouns
 
-        self.update_sentences(length)
-        self.count_nouns(remove_words)
+        # The mininum timestamp for all of the sentences, used for grouping them by time
+        self.start_time = min(int(sentence[2]) for sentence in sentences)
+        self.sentences = sentences # Contains all of the sentence data
+        self.nouns = nouns # Contains all of the found nouns in the sentences
+
+        self.update_sentences(length) # Creates self.group_sentences and self.length
+        self.count_nouns(remove_words) # Creates self.group_count_nouns
     
     def update_sentences(self, length: int):
-        # Updates groups_sentences with new groups of a timespan of length
+        # Updates groups_sentences with new groups of sentences seperated by a timespan of length
         # Length should a timeperiod in seconds such as the length of a day in seconds, 86400
         self.group_sentences: Dict[int, List[str]] = collections.defaultdict(list)
         self.length = length
