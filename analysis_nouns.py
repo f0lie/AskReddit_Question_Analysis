@@ -2,32 +2,32 @@ import collections
 import find_nouns
 
 import datetime
-from find_nouns import Title, Noun
+from find_nouns import Sentence, Noun
 from typing import List, Dict, Set, Counter
 
 CountNouns = Counter[str]
 DAY_LENGTH = 86400
 WEEK_LENGTH = 604800
 
-class TitleCount:
-    def __init__(self, titles, nouns, length, remove_words=None):
-        self.start_time = min(int(title[2]) for title in titles)
-        self.titles = titles
+class NounCount:
+    def __init__(self, sentences: List[Sentence], nouns: List[Noun], length: int, remove_words=None):
+        self.start_time = min(int(sentence[2]) for sentence in sentences)
+        self.sentences = sentences
         self.nouns = nouns
 
-        self.update_titles(length)
+        self.update_sentences(length)
         self.count_nouns(remove_words)
     
-    def update_titles(self, length):
-        # Updates groups_titles with new groups of a timespan of length
+    def update_sentences(self, length: int):
+        # Updates groups_sentences with new groups of a timespan of length
         # Length should a timeperiod in seconds such as the length of a day in seconds, 86400
-        self.group_titles = collections.defaultdict(list)
+        self.group_sentences: Dict[int, List[str]] = collections.defaultdict(list)
         self.length = length
-        for row_id, _, created_utc in self.titles:
+        for row_id, _, created_utc in self.sentences:
             offset = (int(created_utc)-self.start_time)//self.length
-            self.group_titles[offset].append(row_id)
+            self.group_sentences[offset].append(row_id)
     
-    def count_nouns(self, remove_words=None):
+    def count_nouns(self, remove_words: Set[str]=None):
         # Updates group_count_nouns with new counts of nouns within that group
         # Remove_words is a set of words to remove from the count. Meant for very common words
         if not remove_words:
@@ -40,10 +40,10 @@ class TitleCount:
                 noun_lookup[row_id].append(noun.lower())
 
         # Create a dict to quickly add counts to a grouping
-        self.group_count_nouns = collections.defaultdict(collections.Counter)
-        for group, titles in self.group_titles.items():
-            for title in titles:
-                self.group_count_nouns[group].update(noun_lookup[title])
+        self.group_count_nouns: Dict[int, Counter] = collections.defaultdict(collections.Counter)
+        for group, sentences in self.group_sentences.items():
+            for sentence in sentences:
+                self.group_count_nouns[group].update(noun_lookup[sentence])
  
     def print_count(self, n=10):
         # Prints out the top N most common words in a group
@@ -54,19 +54,19 @@ class TitleCount:
                 print('\t', noun, ":", count)
 
 if __name__ == "__main__":
-    titles = find_nouns.read_titles("data/askreddit_titles_entire_month.csv", n=None)
+    sentences = find_nouns.read_sentences("data/askreddit_titles_entire_month.csv", n=None)
     nouns = find_nouns.read_nouns("data/found_nouns_all.csv")
-    print("found titles:", len(titles), ", found nouns:", len(nouns))
+    print("found sentences:", len(sentences), ", found nouns:", len(nouns))
 
-    title_count = TitleCount(titles, nouns, WEEK_LENGTH)
+    sentence_count = NounCount(sentences, nouns, WEEK_LENGTH)
     common_words = set(["reddit", "redditor", "people", "life", "story", "time", "person", "thing", "way"])
 
     print("Results with common words")
-    title_count.print_count()
+    sentence_count.print_count()
     print("Results without common words")
-    title_count.count_nouns(common_words)
-    title_count.print_count()
+    sentence_count.count_nouns(common_words)
+    sentence_count.print_count()
     print("Daily results")
-    title_count.update_titles(DAY_LENGTH)
-    title_count.print_count()
+    sentence_count.update_sentences(DAY_LENGTH)
+    sentence_count.print_count()
  
